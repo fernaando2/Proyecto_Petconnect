@@ -35,10 +35,9 @@ public class HomeActivity extends AppCompatActivity {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Por ahora solo mostramos un mensaje para probar que funciona
-                Toast.makeText(HomeActivity.this, "Abriendo formulario de reporte...", Toast.LENGTH_SHORT).show();
-
-                // Nota: Aquí en el siguiente paso pondremos el Intent para ir a la pantalla de Registro
+                // Ahora sí, saltamos al formulario
+                Intent intent = new Intent(HomeActivity.this, ReporteActivity.class);
+                startActivity(intent);
             }
         });
     }
