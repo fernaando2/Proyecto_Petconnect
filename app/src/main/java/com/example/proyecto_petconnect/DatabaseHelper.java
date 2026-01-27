@@ -61,8 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // DELETE (Borrar todo para el ejemplo)
-    public void borrarTodo() {
+    public void borrarMascota(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.delete(TABLE_NAME, "ID = ?", new String[]{id});
     }
 }

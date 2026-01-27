@@ -14,30 +14,43 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nueva Alerta"
+            android:text="Detalle del Reporte"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"/>
 
         <FrameLayout
-            android:id="@+id/btnHacerFoto"
+            android:id="@+id/btnContenedorFoto"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#EEEEEE"
-            android:layout_marginBottom="16dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PULSA PARA HACER FOTO"
-                android:layout_gravity="center"
-                android:textColor="#888888"/>
+            android:layout_height="220dp"
+            android:layout_marginBottom="16dp"
+            android:background="#F5F5F5"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/imgFotoReporte"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery" />
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="12dp"
+                android:padding="8dp"
+                android:background="@android:drawable/screen_background_light_transparent"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="#FF9800" />
         </FrameLayout>
 
         <EditText
             android:id="@+id/etNombreMascota"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre de la mascota (si lo sabes)"
+            android:hint="Nombre de la mascota"
             android:layout_marginBottom="12dp"/>
 
         <EditText
@@ -51,7 +64,7 @@
             android:id="@+id/etDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción de la incidencia"
+            android:hint="Descripción"
             android:lines="3"
             android:gravity="top"
             android:layout_marginBottom="24dp"/>
@@ -60,7 +73,7 @@
             android:id="@+id/btnGuardar"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="PUBLICAR ALERTA"
+            android:text="GUARDAR CAMBIOS"
             android:backgroundTint="#FF9800"
             android:textColor="#FFFFFF" />
 
