@@ -1,44 +1,68 @@
 package com.example.proyecto_petconnect;
 
-import android.content.Intent; // Importante para cambiar de pantalla
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button; // Importante para el botón
+import android.text.TextUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EditText etEmail, etPassword;
+    private Button btnEntrar;
+    private TextView tvIrARegistro;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Ajuste de márgenes para que no se pise con la barra de estado del móvil
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // Inicializar Firebase y FORZAR cierre de sesión para ver siempre el login
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnEntrar = findViewById(R.id.btnLogin);
+        tvIrARegistro = findViewById(R.id.tvRegistrarse);
+
+        // Botón para entrar
+        btnEntrar.setOnClickListener(v -> loginUsuario());
+
+        // Texto para ir a la pantalla de Registro
+        tvIrARegistro.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RegistroActivity.class);
+            startActivity(intent);
         });
+    }
 
-        // --- AQUÍ EMPIEZA NUESTRO CÓDIGO ---
+    private void loginUsuario() {
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
-        // 1. Buscamos el botón por el ID que pusimos en el XML (btnLogin)
-        Button btnEntrar = findViewById(R.id.btnLogin);
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // 2. Programamos qué pasa cuando el usuario hace clic
-        btnEntrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 3. Creamos el Intent para ir de esta pantalla (MainActivity) a la otra (HomeActivity)
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
-        });
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "¡Bienvenido!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error: " + task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }
