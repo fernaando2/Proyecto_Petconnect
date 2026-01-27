@@ -9,21 +9,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "PetConnect.db";
-    private static final int DATABASE_VERSION = 1;
-
-    public static final String TABLE_NAME = "mascotas";
-    public static final String COL_ID = "ID";
-    public static final String COL_NOMBRE = "NOMBRE";
-    public static final String COL_ESPECIE = "ESPECIE";
-    public static final String COL_DESCRIPCION = "DESCRIPCION";
+    private static final String TABLE_NAME = "mascotas";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, 2); // Subimos a versión 2 por el nuevo campo
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NOMBRE TEXT, ESPECIE TEXT, DESCRIPCION TEXT)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NOMBRE TEXT, ESPECIE TEXT, DESCRIPCION TEXT, ESTADO TEXT)");
     }
 
     @Override
@@ -32,37 +26,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // CREATE
-    public boolean insertarMascota(String nombre, String especie, String desc) {
+    public void insertarMascota(String nombre, String especie, String desc, String estado) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_NOMBRE, nombre);
-        contentValues.put(COL_ESPECIE, especie);
-        contentValues.put(COL_DESCRIPCION, desc);
-        long result = db.insert(TABLE_NAME, null, contentValues);
-        return result != -1;
+        ContentValues cv = new ContentValues();
+        cv.put("NOMBRE", nombre);
+        cv.put("ESPECIE", especie);
+        cv.put("DESCRIPCION", desc);
+        cv.put("ESTADO", estado);
+        db.insert(TABLE_NAME, null, cv);
     }
 
-    // READ
-    public Cursor obtenerTodasLasMascotas() {
+    public void actualizarMascota(String id, String nombre, String especie, String desc, String estado) {
         SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("NOMBRE", nombre);
+        cv.put("ESPECIE", especie);
+        cv.put("DESCRIPCION", desc);
+        cv.put("ESTADO", estado);
+        db.update(TABLE_NAME, cv, "ID = ?", new String[]{id});
+    }
+
+    public Cursor obtenerTodasLasMascotas() {
+        SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    // UPDATE
-    public boolean actualizarMascota(String id, String nombre, String especie, String desc) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_NOMBRE, nombre);
-        contentValues.put(COL_ESPECIE, especie);
-        contentValues.put(COL_DESCRIPCION, desc);
-        db.update(TABLE_NAME, contentValues, "ID = ?", new String[]{id});
-        return true;
-    }
-
-    // DELETE (Borrar todo para el ejemplo)
     public void borrarMascota(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, "ID = ?", new String[]{id});
+        this.getWritableDatabase().delete(TABLE_NAME, "ID = ?", new String[]{id});
     }
 }

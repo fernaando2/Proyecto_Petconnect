@@ -5,15 +5,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
@@ -34,30 +31,36 @@ public class HomeActivity extends AppCompatActivity {
         tvVacio = findViewById(R.id.tvEmptyMessage);
         tvTitulo = findViewById(R.id.tvTitle);
 
-        // Configurar Lista
         recyclerView = findViewById(R.id.recyclerViewMascotas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        cargarDatos();
+        // BOTÓN AGREGAR (FAB Redondo)
+        FloatingActionButton fabAdd = findViewById(R.id.fabAddPet);
+        fabAdd.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, ReporteActivity.class));
+        });
 
-        // Botón añadir
-        FloatingActionButton fab = findViewById(R.id.fabAddPet);
-        fab.setOnClickListener(v -> startActivity(new Intent(this, ReporteActivity.class)));
+        // BOTÓN VER MAPA (Extended FAB a la izquierda)
+        ExtendedFloatingActionButton btnMapa = findViewById(R.id.btnVerMapa);
+        btnMapa.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, MapsActivity.class));
+        });
 
-        // CERRAR SESIÓN: Si dejas pulsado el título, sales de la app
+        // Logout con pulsación larga en el título
         tvTitulo.setOnLongClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(HomeActivity.this, MainActivity.class));
             finish();
             return true;
         });
+
+        cargarDatos();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatos();
+        cargarDatos(); // Refrescar lista al volver de ReporteActivity
     }
 
     private void cargarDatos() {
@@ -67,10 +70,15 @@ public class HomeActivity extends AppCompatActivity {
         if (cursor != null && cursor.getCount() > 0) {
             tvVacio.setVisibility(View.GONE);
             while (cursor.moveToNext()) {
-                listaMascotas.add(new Mascota(
+                // IMPORTANTE: El orden debe ser ID(0), Nombre(1), Especie(2), Desc(3), Estado(4)
+                Mascota m = new Mascota(
                         cursor.getString(1),
                         cursor.getString(2),
-                        cursor.getString(3)));
+                        cursor.getString(3),
+                        cursor.getString(4) // <--- Aquí cargamos el Estado
+                );
+                m.setId(cursor.getString(0));
+                listaMascotas.add(m);
             }
         } else {
             tvVacio.setVisibility(View.VISIBLE);

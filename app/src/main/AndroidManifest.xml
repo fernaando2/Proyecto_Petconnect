@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
         <intent>
@@ -20,6 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto_Petconnect">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAkHFLMYZ0HPzxVj-_k9vi4BCEoZfQOC-8" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -32,6 +38,7 @@
         <activity android:name=".HomeActivity" android:exported="false" />
         <activity android:name=".ReporteActivity" android:exported="false" />
         <activity android:name=".RegistroActivity" android:exported="false" />
+        <activity android:name=".MapsActivity" android:exported="false" />
 
     </application>
 </manifest>
