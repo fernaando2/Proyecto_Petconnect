@@ -6,11 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -26,8 +22,9 @@ public class ReporteActivity extends AppCompatActivity {
     private ImageView imgFoto;
     private String pathFoto = "";
     private DatabaseHelper db;
-    private static final int CAMERA_PERMISSION_CODE = 101;
-    private static final int CAMERA_REQUEST_CODE = 102;
+
+    // ID temporal para pruebas (En el Hito 3 vendrá del Login)
+    private String miUsuarioID = "ID_PRUEBA_1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,30 +38,39 @@ public class ReporteActivity extends AppCompatActivity {
         spEstado = findViewById(R.id.spinnerEstado);
         imgFoto = findViewById(R.id.imgFotoReporte);
 
-        // Configurar Spinner
+        // Configurar opciones del Spinner
         String[] opciones = {"Perdido", "Localizado", "En Acogida"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, opciones);
-        spEstado.setAdapter(adapter);
+        spEstado.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, opciones));
 
-        // Botón Cámara
-        findViewById(R.id.btnContenedorFoto).setOnClickListener(v -> pedirPermisosYCamara());
+        // Botón para la Cámara
+        findViewById(R.id.btnContenedorFoto).setOnClickListener(v -> comprobarPermisos());
 
-        // Botón Guardar
+        // Botón Guardar (Aquí estaba el fallo de los 6 argumentos)
         findViewById(R.id.btnGuardar).setOnClickListener(v -> {
             String nom = etNombre.getText().toString().trim();
             if (nom.isEmpty()) {
-                Toast.makeText(this, "El nombre es obligatorio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ponle un nombre a la mascota", Toast.LENGTH_SHORT).show();
                 return;
             }
-            db.insertarMascota(nom, etEspecie.getText().toString(), etDesc.getText().toString(),
-                    spEstado.getSelectedItem().toString(), pathFoto);
+
+            // LLAMADA CORREGIDA: Ahora pasamos los 6 datos (incluyendo el ID de usuario)
+            db.insertarMascota(
+                    nom,
+                    etEspecie.getText().toString(),
+                    etDesc.getText().toString(),
+                    spEstado.getSelectedItem().toString(),
+                    pathFoto,
+                    miUsuarioID
+            );
+
+            Toast.makeText(this, "Reporte guardado con éxito", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
 
-    private void pedirPermisosYCamara() {
+    private void comprobarPermisos() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
         } else {
             abrirCamara();
         }
@@ -73,40 +79,27 @@ public class ReporteActivity extends AppCompatActivity {
     private void abrirCamara() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, CAMERA_REQUEST_CODE);
-        } else {
-            Toast.makeText(this, "No se encontró app de cámara", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            abrirCamara();
-        } else {
-            Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+            startActivityForResult(intent, 102);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 102 && resultCode == RESULT_OK && data != null) {
             Bitmap bmp = (Bitmap) data.getExtras().get("data");
             imgFoto.setImageBitmap(bmp);
-            pathFoto = guardarImagenPrivada(bmp);
+            pathFoto = guardarFotoEnMemoria(bmp);
         }
     }
 
-    private String guardarImagenPrivada(Bitmap bitmap) {
-        File directorio = new File(getExternalFilesDir(null), "mascotas");
-        if (!directorio.exists()) directorio.mkdirs();
-        String nombreArchivo = "pet_" + UUID.randomUUID().toString() + ".jpg";
-        File archivo = new File(directorio, nombreArchivo);
-        try (FileOutputStream out = new FileOutputStream(archivo)) {
+    private String guardarFotoEnMemoria(Bitmap bitmap) {
+        File dir = new File(getExternalFilesDir(null), "mascotas");
+        if (!dir.exists()) dir.mkdirs();
+        File file = new File(dir, "pet_" + UUID.randomUUID().toString() + ".jpg");
+        try (FileOutputStream out = new FileOutputStream(file)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            return archivo.getAbsolutePath();
+            return file.getAbsolutePath();
         } catch (Exception e) {
             return "";
         }

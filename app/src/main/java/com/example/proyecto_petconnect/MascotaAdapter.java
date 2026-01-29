@@ -2,27 +2,25 @@ package com.example.proyecto_petconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.io.File;
 import java.util.ArrayList;
 
 public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<Mascota> lista;
-    private DatabaseHelper db;
 
     public MascotaAdapter(Context context, ArrayList<Mascota> lista) {
         this.context = context;
         this.lista = lista;
-        this.db = new DatabaseHelper(context);
     }
 
     @NonNull
@@ -35,50 +33,62 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Mascota m = lista.get(position);
-        holder.nombre.setText(m.getNombre());
-        holder.especie.setText(m.getEspecie());
-        holder.estado.setText(m.getEstado().toUpperCase());
 
-        // Cambio de color según estado
-        if (m.getEstado().equalsIgnoreCase("Perdido")) {
-            holder.estado.setTextColor(Color.RED);
-        } else if (m.getEstado().equalsIgnoreCase("Localizado")) {
-            holder.estado.setTextColor(Color.parseColor("#2E7D32")); // Verde oscuro
+        // 1. Cargamos los datos básicos
+        holder.nombre.setText(m.getNombre());
+        holder.estado.setText(m.getEstado());
+
+        // 2. Cargamos la foto desde el almacenamiento interno
+        if (m.getFotoPath() != null && !m.getFotoPath().isEmpty()) {
+            File imgFile = new File(m.getFotoPath());
+            if (imgFile.exists()) {
+                holder.img.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
+            }
         } else {
-            holder.estado.setTextColor(Color.BLUE);
+            // Imagen por defecto si no hay foto
+            holder.img.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
+        // 3. Lógica de BORRAR: Solo visible en PerfilActivity
+        if (context instanceof PerfilActivity) {
+            holder.btnBorrar.setVisibility(View.VISIBLE);
+            holder.btnBorrar.setOnClickListener(v -> {
+                // Llamamos al método público de PerfilActivity para borrar
+                ((PerfilActivity) context).eliminarMascota(m.getId());
+            });
+        } else {
+            // En HomeActivity el botón de borrar no debe existir
+            holder.btnBorrar.setVisibility(View.GONE);
+        }
+
+        // 4. Lógica de CLIC: Abrir DetalleActivity (Ficha del animal y dueño)
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ReporteActivity.class);
-            intent.putExtra("ID", m.getId());
+            Intent intent = new Intent(context, DetalleActivity.class);
             intent.putExtra("NOMBRE", m.getNombre());
-            intent.putExtra("ESPECIE", m.getEspecie());
             intent.putExtra("DESC", m.getDescripcion());
             intent.putExtra("ESTADO", m.getEstado());
+            intent.putExtra("FOTO", m.getFotoPath());
+            intent.putExtra("USUARIO_ID", m.getUsuarioId()); // Necesario para buscar al dueño
             context.startActivity(intent);
-        });
-
-        holder.btnBorrar.setOnClickListener(v -> {
-            db.borrarMascota(m.getId());
-            lista.remove(position);
-            notifyItemRemoved(position);
         });
     }
 
     @Override
-    public int getItemCount() { return lista.size(); }
+    public int getItemCount() {
+        return lista.size();
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre, especie, estado;
-        ImageView imgMascota;
-        ImageButton btnBorrar;
+        TextView nombre, estado;
+        ImageView img;
+        View btnBorrar;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Asegúrate de que estos IDs coincidan con tu fila_mascota.xml
             nombre = itemView.findViewById(R.id.txtNombreFila);
-            especie = itemView.findViewById(R.id.txtEspecieFila);
             estado = itemView.findViewById(R.id.txtEstadoFila);
-            imgMascota = itemView.findViewById(R.id.imgMascotaFila);
+            img = itemView.findViewById(R.id.imgMascotaFila);
             btnBorrar = itemView.findViewById(R.id.btnBorrarFila);
         }
     }

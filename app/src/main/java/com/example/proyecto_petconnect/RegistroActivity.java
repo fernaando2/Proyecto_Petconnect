@@ -1,45 +1,36 @@
 package com.example.proyecto_petconnect;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class RegistroActivity extends AppCompatActivity {
-
-    private FirebaseAuth mAuth;
-    private EditText etEmail, etPassword;
-    private Button btnRegistrar;
+    private EditText etNom, etTel, etMail;
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro); // Asegúrate de crear este XML
+        setContentView(R.layout.activity_registro);
 
-        mAuth = FirebaseAuth.getInstance();
+        db = new DatabaseHelper(this);
+        etNom = findViewById(R.id.etNombreRegistro);
+        etTel = findViewById(R.id.etTelefonoRegistro);
+        etMail = findViewById(R.id.etEmailRegistro);
 
-        etEmail = findViewById(R.id.etEmailRegistro);
-        etPassword = findViewById(R.id.etPasswordRegistro);
-        btnRegistrar = findViewById(R.id.btnRegistrarFinal);
+        findViewById(R.id.btnFinalizarRegistro).setOnClickListener(v -> {
+            String nom = etNom.getText().toString();
+            String tel = etTel.getText().toString();
+            String mail = etMail.getText().toString();
 
-        btnRegistrar.setOnClickListener(v -> {
-            String email = etEmail.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-
-            if (!email.isEmpty() && !password.isEmpty()) {
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(RegistroActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(RegistroActivity.this, HomeActivity.class));
-                                finish();
-                            } else {
-                                Toast.makeText(RegistroActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+            if (!nom.isEmpty() && !tel.isEmpty()) {
+                // Guardamos en la BD local con un ID único para este móvil
+                db.registrarUsuario("MI_ID_LOCAL", nom, tel, mail);
+                Toast.makeText(this, "Perfil creado", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Rellena los campos", Toast.LENGTH_SHORT).show();
             }
         });
     }

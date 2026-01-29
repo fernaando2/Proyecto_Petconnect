@@ -9,12 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private MascotaAdapter adapter;
     private ArrayList<Mascota> listaMascotas;
@@ -33,17 +30,9 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewMascotas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ChipGroup chipGroup = findViewById(R.id.chipGroupFilters);
-        chipGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.chipPerdidos) filtroActual = "Perdido";
-            else if (checkedId == R.id.chipLocalizados) filtroActual = "Localizado";
-            else if (checkedId == R.id.chipAcogida) filtroActual = "En Acogida";
-            else filtroActual = "Todos";
-            cargarDatos();
-        });
-
-        findViewById(R.id.btnVerMapa).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
-        findViewById(R.id.fabAddPet).setOnClickListener(v -> startActivity(new Intent(this, ReporteActivity.class)));
+        // Botón Perfil
+        findViewById(R.id.btnIrPerfil).setOnClickListener(v ->
+                startActivity(new Intent(this, PerfilActivity.class)));
 
         cargarDatos();
     }
@@ -60,10 +49,14 @@ public class HomeActivity extends AppCompatActivity {
         if (c != null && c.getCount() > 0) {
             tvVacio.setVisibility(View.GONE);
             while (c.moveToNext()) {
-                Mascota m = new Mascota(c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
+                // Leemos los 6 campos para crear el objeto Mascota correctamente
+                Mascota m = new Mascota(c.getString(1), c.getString(2),
+                        c.getString(3), c.getString(4),
+                        c.getString(5), c.getString(6));
                 m.setId(c.getString(0));
                 listaMascotas.add(m);
             }
+            c.close();
         } else {
             tvVacio.setVisibility(View.VISIBLE);
         }

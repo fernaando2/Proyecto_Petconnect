@@ -9,49 +9,55 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:text="PetConnect"
         android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvEmptyMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="¡Todavía no hay avisos!"
-        android:visibility="gone" />
+    <ImageButton
+        android:id="@+id/btnIrPerfil"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FF9800" />
 
-    <HorizontalScrollView
-        android:id="@+id/filterScroll"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:paddingStart="16dp"
+        app:singleSelection="true"
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupFilters"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip android:id="@+id/chipAll" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Todos" android:checked="true"/>
-            <com.google.android.material.chip.Chip android:id="@+id/chipPerdidos" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perdido" />
-            <com.google.android.material.chip.Chip android:id="@+id/chipLocalizados" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Localizado" />
-            <com.google.android.material.chip.Chip android:id="@+id/chipAcogida" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="En Acogida" />
-
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
+        <com.google.android.material.chip.Chip android:id="@+id/chipAll" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Todos" android:checked="true"/>
+        <com.google.android.material.chip.Chip android:id="@+id/chipPerdidos" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perdido" />
+        <com.google.android.material.chip.Chip android:id="@+id/chipLocalizados" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Localizado" />
+    </com.google.android.material.chip.ChipGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMascotas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filterScroll" />
+        app:layout_constraintTop_toBottomOf="@id/chipGroupFilters" />
+
+    <TextView
+        android:id="@+id/tvEmptyMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No hay mascotas reportadas"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddPet"
@@ -62,19 +68,5 @@
         app:backgroundTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btnVerMapa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:text="MAPA"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#FF9800"
-        app:icon="@android:drawable/ic_dialog_map"
-        app:iconTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@id/fabAddPet"
-        app:layout_constraintEnd_toStartOf="@id/fabAddPet"
-        app:layout_constraintTop_toTopOf="@id/fabAddPet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
