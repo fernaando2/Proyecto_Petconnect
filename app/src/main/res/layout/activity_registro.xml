@@ -9,37 +9,45 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="REGISTRO"
+        android:text="CREAR CUENTA"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="20dp"
+        android:textColor="#FF9800"/>
 
     <EditText
         android:id="@+id/etNombreRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre completo" />
+        android:hint="Nombre completo"/>
 
     <EditText
         android:id="@+id/etTelefonoRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Teléfono"
-        android:inputType="phone" />
+        android:inputType="phone"/>
 
     <EditText
         android:id="@+id/etEmailRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"/>
+
+    <EditText
+        android:id="@+id/etPassRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btnFinalizarRegistro"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="20dp"
-        android:text="GUARDAR PERFIL"
+        android:text="FINALIZAR REGISTRO"
         android:backgroundTint="#FF9800"/>
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.example.proyecto_petconnect;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,15 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class PerfilActivity extends AppCompatActivity {
-
     private DatabaseHelper db;
     private RecyclerView rv;
-    private MascotaAdapter adapter;
     private ArrayList<Mascota> misMascotas;
-    private TextView tvNombre, tvContacto;
-
-    // Este ID debe ser el mismo que usas al registrarte y al subir mascotas
-    private String miID = "MI_ID_LOCAL";
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,61 +21,46 @@ public class PerfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_perfil);
 
         db = new DatabaseHelper(this);
-        rv = findViewById(R.id.rvMisMascotas);
-        tvNombre = findViewById(R.id.tvPerfilNombre);
-        tvContacto = findViewById(R.id.tvPerfilContacto);
+        userEmail = getIntent().getStringExtra("USER_EMAIL");
 
+        rv = findViewById(R.id.rvMisMascotas);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
-        cargarDatosUsuario();
+        cargarInfoUsuario();
         cargarMisPublicaciones();
     }
 
-    private void cargarDatosUsuario() {
-        Cursor c = db.obtenerUsuario(miID);
+    private void cargarInfoUsuario() {
+        TextView tvNom = findViewById(R.id.tvPerfilNombre);
+        TextView tvCon = findViewById(R.id.tvPerfilContacto);
+
+        Cursor c = db.obtenerUsuario(userEmail);
         if (c != null && c.moveToFirst()) {
-            // Suponiendo columnas: 1:Nombre, 2:Teléfono, 3:Email
-            tvNombre.setText(c.getString(1));
-            String contacto = c.getString(2) + " | " + c.getString(3);
-            tvContacto.setText(contacto);
+            tvNom.setText(c.getString(1)); // Nombre
+            tvCon.setText(c.getString(2) + " | " + c.getString(3)); // Tel y Mail
             c.close();
-        } else {
-            tvNombre.setText("Usuario no registrado");
-            tvContacto.setText("Por favor, completa tu perfil");
         }
     }
 
     private void cargarMisPublicaciones() {
         misMascotas = new ArrayList<>();
-        // Este método en DatabaseHelper debe filtrar por USUARIO_ID
-        Cursor c = db.obtenerMisMascotas(miID);
-
+        Cursor c = db.obtenerMisMascotas(userEmail);
         if (c != null) {
             while (c.moveToNext()) {
-                // Mapeo de columnas: 0:ID, 1:Nombre, 2:Especie, 3:Desc, 4:Estado, 5:Foto, 6:UID
-                Mascota m = new Mascota(
-                        c.getString(1),
-                        c.getString(2),
-                        c.getString(3),
-                        c.getString(4),
-                        c.getString(5),
-                        c.getString(6)
-                );
+                Mascota m = new Mascota(c.getString(1), c.getString(2), c.getString(3),
+                        c.getString(4), c.getString(5), c.getString(6));
                 m.setId(c.getString(0));
                 misMascotas.add(m);
             }
             c.close();
         }
-
-        adapter = new MascotaAdapter(this, misMascotas);
-        rv.setAdapter(adapter);
+        // Pasamos 'this' para que el adapter sepa que estamos en Perfil y deje borrar
+        rv.setAdapter(new MascotaAdapter(this, misMascotas));
     }
 
-    // MÉTODO VITAL: El adaptador llama a este método para borrar
-    public void eliminarMascota(String idMascota) {
-        db.borrarMascota(idMascota);
-        Toast.makeText(this, "Publicación eliminada", Toast.LENGTH_SHORT).show();
-        // Recargamos la lista para que desaparezca visualmente
+    public void eliminarMascota(String id) {
+        db.borrarMascota(id);
+        Toast.makeText(this, "Eliminado", Toast.LENGTH_SHORT).show();
         cargarMisPublicaciones();
     }
 }

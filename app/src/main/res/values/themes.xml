@@ -1,9 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.Proyecto_Petconnect" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">#FF9800</item>
+        <item name="colorPrimaryVariant">#F57C00</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <item name="android:windowBackground">#F8F9FA</item>
+
+        <item name="colorPrimaryContainer">#FFE0B2</item>
+        <item name="colorOnPrimaryContainer">#5D4037</item>
     </style>
 
     <style name="Theme.Proyecto_Petconnect" parent="Base.Theme.Proyecto_Petconnect" />
+
+    <style name="ShapeAppearance.MaterialComponents.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="CustomCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+    </style>
+
 </resources>

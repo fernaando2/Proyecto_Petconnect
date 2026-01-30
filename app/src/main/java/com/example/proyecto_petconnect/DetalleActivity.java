@@ -1,6 +1,5 @@
 package com.example.proyecto_petconnect;
 
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -8,36 +7,23 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DetalleActivity extends AppCompatActivity {
-    private DatabaseHelper db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle);
 
-        db = new DatabaseHelper(this);
+        Mascota m = (Mascota) getIntent().getSerializableExtra("MASCOTA");
 
-        ImageView img = findViewById(R.id.imgDetalle);
-        TextView txtNombre = findViewById(R.id.txtDetalleNombre);
-        TextView txtInfo = findViewById(R.id.txtDetalleInfo);
-        TextView txtDueño = findViewById(R.id.txtNombreDueño);
-        TextView txtTel = findViewById(R.id.txtTelDueño);
-        TextView txtMail = findViewById(R.id.txtMailDueño);
+        if (m != null) {
+            ((TextView) findViewById(R.id.tvDetalleNombre)).setText(m.getNombre());
+            ((TextView) findViewById(R.id.tvDetalleEspecie)).setText(m.getEspecie());
+            ((TextView) findViewById(R.id.tvDetalleDescripcion)).setText(m.getDescripcion());
+            ((TextView) findViewById(R.id.tvDetalleEstado)).setText(m.getEstado());
 
-        // Datos de la mascota
-        txtNombre.setText(getIntent().getStringExtra("NOMBRE"));
-        txtInfo.setText(getIntent().getStringExtra("DESC"));
-        String path = getIntent().getStringExtra("FOTO");
-        if (path != null) img.setImageBitmap(BitmapFactory.decodeFile(path));
-
-        // Buscar datos del dueño por ID
-        String uid = getIntent().getStringExtra("USUARIO_ID");
-        Cursor c = db.obtenerUsuario(uid);
-        if (c.moveToFirst()) {
-            txtDueño.setText(c.getString(1)); // Nombre
-            txtTel.setText("Teléfono: " + c.getString(2));
-            txtMail.setText("Email: " + c.getString(3));
+            ImageView img = findViewById(R.id.imgDetalleMascota);
+            if (m.getFotoPath() != null && !m.getFotoPath().equals("sin_foto")) {
+                img.setImageBitmap(BitmapFactory.decodeFile(m.getFotoPath()));
+            }
         }
-        c.close();
     }
 }

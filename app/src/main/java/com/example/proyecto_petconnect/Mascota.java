@@ -1,6 +1,9 @@
 package com.example.proyecto_petconnect;
 
-public class Mascota {
+import java.io.Serializable;
+
+// Añade "implements Serializable" para que el Intent lo acepte
+public class Mascota implements Serializable {
     private String id, nombre, especie, descripcion, estado, fotoPath, usuarioId;
 
     public Mascota(String nombre, String especie, String descripcion, String estado, String fotoPath, String usuarioId) {

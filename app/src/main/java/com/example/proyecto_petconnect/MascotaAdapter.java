@@ -2,6 +2,7 @@ package com.example.proyecto_petconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,83 +14,79 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MyViewHolder> {
+public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.ViewHolder> {
 
+    private ArrayList<Mascota> listaMascotas;
     private Context context;
-    private ArrayList<Mascota> lista;
 
-    public MascotaAdapter(Context context, ArrayList<Mascota> lista) {
+    public MascotaAdapter(Context context, ArrayList<Mascota> listaMascotas) {
         this.context = context;
-        this.lista = lista;
+        this.listaMascotas = listaMascotas;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.fila_mascota, parent, false);
-        return new MyViewHolder(v);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflamos el diseño de la "tarjeta" de cada mascota
+        View view = LayoutInflater.from(context).inflate(R.layout.fila_mascota, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Mascota m = lista.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Mascota m = listaMascotas.get(position);
 
-        // 1. Cargamos los datos básicos
-        holder.nombre.setText(m.getNombre());
-        holder.estado.setText(m.getEstado());
+        holder.tvNombre.setText(m.getNombre());
+        holder.tvEstado.setText(m.getEstado());
+        holder.tvEspecie.setText(m.getEspecie());
 
-        // 2. Cargamos la foto desde el almacenamiento interno
-        if (m.getFotoPath() != null && !m.getFotoPath().isEmpty()) {
+        // CARGAR LA FOTO REAL
+        if (m.getFotoPath() != null && !m.getFotoPath().equals("sin_foto")) {
             File imgFile = new File(m.getFotoPath());
             if (imgFile.exists()) {
-                holder.img.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                holder.imgMascota.setImageBitmap(myBitmap);
+            } else {
+                holder.imgMascota.setImageResource(R.drawable.perfil_placeholder);
             }
         } else {
-            // Imagen por defecto si no hay foto
-            holder.img.setImageResource(android.R.drawable.ic_menu_gallery);
+            holder.imgMascota.setImageResource(R.drawable.perfil_placeholder);
         }
 
-        // 3. Lógica de BORRAR: Solo visible en PerfilActivity
+        // LÓGICA DE BORRADO (Solo si estamos en PerfilActivity)
         if (context instanceof PerfilActivity) {
             holder.btnBorrar.setVisibility(View.VISIBLE);
             holder.btnBorrar.setOnClickListener(v -> {
-                // Llamamos al método público de PerfilActivity para borrar
                 ((PerfilActivity) context).eliminarMascota(m.getId());
             });
         } else {
-            // En HomeActivity el botón de borrar no debe existir
             holder.btnBorrar.setVisibility(View.GONE);
         }
 
-        // 4. Lógica de CLIC: Abrir DetalleActivity (Ficha del animal y dueño)
+        // CLICK PARA VER DETALLES
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetalleActivity.class);
-            intent.putExtra("NOMBRE", m.getNombre());
-            intent.putExtra("DESC", m.getDescripcion());
-            intent.putExtra("ESTADO", m.getEstado());
-            intent.putExtra("FOTO", m.getFotoPath());
-            intent.putExtra("USUARIO_ID", m.getUsuarioId()); // Necesario para buscar al dueño
+            intent.putExtra("MASCOTA", m); // Mascota debe ser Serializable
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        return listaMascotas.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre, estado;
-        ImageView img;
-        View btnBorrar;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgMascota, btnBorrar;
+        TextView tvNombre, tvEstado, tvEspecie;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Asegúrate de que estos IDs coincidan con tu fila_mascota.xml
-            nombre = itemView.findViewById(R.id.txtNombreFila);
-            estado = itemView.findViewById(R.id.txtEstadoFila);
-            img = itemView.findViewById(R.id.imgMascotaFila);
-            btnBorrar = itemView.findViewById(R.id.btnBorrarFila);
+            imgMascota = itemView.findViewById(R.id.imgMascotaFila);
+            tvNombre = itemView.findViewById(R.id.tvNombreFila);
+            tvEstado = itemView.findViewById(R.id.tvEstadoFila);
+            tvEspecie = itemView.findViewById(R.id.tvEspecieFila);
+            btnBorrar = itemView.findViewById(R.id.btnBorrarMascota);
         }
     }
 }

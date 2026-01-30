@@ -4,20 +4,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private MascotaAdapter adapter;
-    private ArrayList<Mascota> listaMascotas;
+
+    private String userEmail;
     private DatabaseHelper db;
-    private TextView tvVacio;
-    private String filtroActual = "Todos";
+    private RecyclerView rv;
+    private Spinner spinnerFiltro;
+    private ArrayList<Mascota> listaMascotas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,42 +27,87 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         db = new DatabaseHelper(this);
-        listaMascotas = new ArrayList<>();
-        tvVacio = findViewById(R.id.tvEmptyMessage);
-        recyclerView = findViewById(R.id.recyclerViewMascotas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Botón Perfil
-        findViewById(R.id.btnIrPerfil).setOnClickListener(v ->
-                startActivity(new Intent(this, PerfilActivity.class)));
+        // 1. Obtener email del usuario (Protección contra cierres)
+        userEmail = getIntent().getStringExtra("USER_EMAIL");
+        if (userEmail == null) userEmail = "invitado@mail.com";
 
-        cargarDatos();
+        // 2. Vincular RecyclerView
+        rv = findViewById(R.id.rvMascotasHome);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
+        // 3. CONFIGURAR EL SPINNER DE FILTRO (Lo que hacía que no se abriera)
+        spinnerFiltro = findViewById(R.id.spinnerFiltroHome);
+        String[] opciones = {"Todos", "Perdido", "Localizado", "En Adopción"};
+
+        ArrayAdapter<String> adapterF = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, opciones);
+        adapterF.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFiltro.setAdapter(adapterF);
+
+        // Evento del Spinner para filtrar la lista
+        spinnerFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cargarMascotas(opciones[position]);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // 4. BOTÓN MAPA (Abrir MapsActivity)
+        findViewById(R.id.btnVerMapa).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
+        });
+
+        // 5. BOTÓN PERFIL
+        findViewById(R.id.btnIrPerfil).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PerfilActivity.class);
+            intent.putExtra("USER_EMAIL", userEmail);
+            startActivity(intent);
+        });
+
+        // 6. BOTÓN AGREGAR (FAB)
+        findViewById(R.id.fabAddPet).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ReporteActivity.class);
+            intent.putExtra("USER_EMAIL", userEmail);
+            startActivity(intent);
+        });
     }
 
+    // Recargar la lista cada vez que volvemos a la pantalla
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatos();
+        if (spinnerFiltro != null) {
+            cargarMascotas(spinnerFiltro.getSelectedItem().toString());
+        }
     }
 
-    private void cargarDatos() {
-        listaMascotas.clear();
-        Cursor c = db.obtenerMascotasFiltradas(filtroActual);
-        if (c != null && c.getCount() > 0) {
-            tvVacio.setVisibility(View.GONE);
+    private void cargarMascotas(String filtro) {
+        listaMascotas = new ArrayList<>();
+        Cursor c = db.obtenerMascotasFiltradas(filtro);
+
+        if (c != null) {
             while (c.moveToNext()) {
-                // Leemos los 6 campos para crear el objeto Mascota correctamente
-                Mascota m = new Mascota(c.getString(1), c.getString(2),
-                        c.getString(3), c.getString(4),
-                        c.getString(5), c.getString(6));
-                m.setId(c.getString(0));
+                // El orden debe ser: Nombre(1), Especie(2), Desc(3), Estado(4), Foto(5), UID(6)
+                Mascota m = new Mascota(
+                        c.getString(1),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getString(4),
+                        c.getString(5),
+                        c.getString(6)
+                );
+                m.setId(c.getString(0)); // ID autoincremental es la columna 0
                 listaMascotas.add(m);
             }
             c.close();
-        } else {
-            tvVacio.setVisibility(View.VISIBLE);
         }
-        adapter = new MascotaAdapter(this, listaMascotas);
-        recyclerView.setAdapter(adapter);
+
+        // Vincular el adaptador
+        MascotaAdapter adapter = new MascotaAdapter(this, listaMascotas);
+        rv.setAdapter(adapter);
     }
 }
