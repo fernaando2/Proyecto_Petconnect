@@ -62,4 +62,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void borrarMascota(String id) {
         this.getWritableDatabase().delete("mascotas", "ID = ?", new String[]{id});
     }
+    public void actualizarMascota(String id, String nombre, String especie, String desc, String estado, String pathFoto) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("NOMBRE", nombre);
+        values.put("ESPECIE", especie);
+        values.put("DESCRIPCION", desc);
+        values.put("ESTADO", estado);
+
+        db.update("mascotas", values, "ID = ?", new String[]{id});
+        db.close();
+    }
+    public String obtenerTelefonoUsuario(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT TELEFONO FROM usuarios WHERE EMAIL = ?", new String[]{email});
+        if (c != null && c.moveToFirst()) {
+            String tel = c.getString(0);
+            c.close();
+            return tel;
+        }
+        return ""; // Si no lo encuentra
+    }
 }

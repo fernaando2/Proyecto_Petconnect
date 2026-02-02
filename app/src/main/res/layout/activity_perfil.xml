@@ -55,6 +55,14 @@
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
     </RelativeLayout>
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="CERRAR SESIÓN"
+        android:backgroundTint="#F44336"
+        android:textColor="@android:color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMisMascotas"

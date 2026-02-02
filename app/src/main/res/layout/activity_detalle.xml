@@ -10,5 +10,16 @@
     <TextView android:id="@+id/tvDetalleEspecie" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="18sp" />
     <TextView android:id="@+id/tvDetalleEstado" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FF9800" android:textStyle="italic" />
     <TextView android:id="@+id/tvDetalleDescripcion" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="15dp" />
+    <Button
+        android:id="@+id/btnContactar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:text="CONTACTAR CON EL DUEÑO"
+        android:drawableStart="@android:drawable/stat_notify_chat"
+        android:paddingStart="20dp"
+        android:backgroundTint="#25D366"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
 </LinearLayout>

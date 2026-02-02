@@ -1,7 +1,9 @@
 package com.example.proyecto_petconnect;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,22 @@ public class PerfilActivity extends AppCompatActivity {
 
         cargarInfoUsuario();
         cargarMisPublicaciones();
+
+        // Dentro del onCreate de PerfilActivity.java
+        Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
+
+        btnCerrarSesion.setOnClickListener(v -> {
+            // 1. Creamos el Intent hacia el Login
+            Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
+
+            // 2. Limpiamos el historial de pantallas para que no pueda volver atrás
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            startActivity(intent);
+
+            // 3. Cerramos la actividad actual
+            finish();
+        });
     }
 
     private void cargarInfoUsuario() {

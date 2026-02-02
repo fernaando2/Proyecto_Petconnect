@@ -15,26 +15,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/spinnerFiltroHome"
-        android:layout_above="@+id/layoutBotones" />
-
-    <LinearLayout
-        android:id="@+id/layoutBotones"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <Button android:id="@+id/btnVerMapa" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Ver Mapa" />
-        <Button android:id="@+id/btnIrPerfil" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Mi Perfil" />
-    </LinearLayout>
+        android:layout_above="@id/bottom_navigation"
+        android:clipToPadding="false"
+        android:paddingBottom="10dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddPet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_above="@id/layoutBotones"
+        android:layout_above="@id/bottom_navigation"
         android:layout_margin="20dp"
+        app:tint="@android:color/white"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:elevation="8dp"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

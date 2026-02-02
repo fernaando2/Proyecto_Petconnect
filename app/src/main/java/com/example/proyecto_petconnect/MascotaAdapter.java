@@ -27,7 +27,6 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflamos el diseño de la "tarjeta" de cada mascota
         View view = LayoutInflater.from(context).inflate(R.layout.fila_mascota, parent, false);
         return new ViewHolder(view);
     }
@@ -38,35 +37,47 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.ViewHold
 
         holder.tvNombre.setText(m.getNombre());
         holder.tvEstado.setText(m.getEstado());
-        holder.tvEspecie.setText(m.getEspecie());
 
-        // CARGAR LA FOTO REAL
+        // Manejo de la foto
         if (m.getFotoPath() != null && !m.getFotoPath().equals("sin_foto")) {
             File imgFile = new File(m.getFotoPath());
             if (imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 holder.imgMascota.setImageBitmap(myBitmap);
             } else {
-                holder.imgMascota.setImageResource(R.drawable.perfil_placeholder);
+                holder.imgMascota.setImageResource(android.R.drawable.ic_menu_gallery);
             }
         } else {
-            holder.imgMascota.setImageResource(R.drawable.perfil_placeholder);
+            holder.imgMascota.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-        // LÓGICA DE BORRADO (Solo si estamos en PerfilActivity)
+        // LÓGICA DE PERFIL (EDITAR Y BORRAR)
         if (context instanceof PerfilActivity) {
             holder.btnBorrar.setVisibility(View.VISIBLE);
+            holder.btnEditar.setVisibility(View.VISIBLE);
+
+            // Acción Editar
+            holder.btnEditar.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ReporteActivity.class);
+                intent.putExtra("MASCOTA_EDITAR", m);
+                intent.putExtra("USER_EMAIL", m.getUsuarioId());
+                context.startActivity(intent);
+            });
+
+            // Acción Borrar
             holder.btnBorrar.setOnClickListener(v -> {
                 ((PerfilActivity) context).eliminarMascota(m.getId());
             });
         } else {
+            // Si no estamos en el perfil, ocultamos ambos botones
             holder.btnBorrar.setVisibility(View.GONE);
+            holder.btnEditar.setVisibility(View.GONE);
         }
 
-        // CLICK PARA VER DETALLES
+        // Click para ver detalles
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetalleActivity.class);
-            intent.putExtra("MASCOTA", m); // Mascota debe ser Serializable
+            intent.putExtra("MASCOTA", m);
             context.startActivity(intent);
         });
     }
@@ -77,16 +88,17 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgMascota, btnBorrar;
-        TextView tvNombre, tvEstado, tvEspecie;
+        ImageView imgMascota, btnBorrar, btnEditar;
+        TextView tvNombre, tvEstado;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Estos IDs deben coincidir con el XML "fila_mascota.xml" que te pasé
             imgMascota = itemView.findViewById(R.id.imgMascotaFila);
             tvNombre = itemView.findViewById(R.id.tvNombreFila);
             tvEstado = itemView.findViewById(R.id.tvEstadoFila);
-            tvEspecie = itemView.findViewById(R.id.tvEspecieFila);
-            btnBorrar = itemView.findViewById(R.id.btnBorrarMascota);
+            btnBorrar = itemView.findViewById(R.id.btnBorrar); // ID corregido según el XML
+            btnEditar = itemView.findViewById(R.id.btnEditar); // ID corregido según el XML
         }
     }
 }

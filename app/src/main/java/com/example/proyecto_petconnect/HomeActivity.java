@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
 
-        // 1. Obtener email del usuario (Protección contra cierres)
+        // 1. Obtener email del usuario
         userEmail = getIntent().getStringExtra("USER_EMAIL");
         if (userEmail == null) userEmail = "invitado@mail.com";
 
@@ -36,16 +36,13 @@ public class HomeActivity extends AppCompatActivity {
         rv = findViewById(R.id.rvMascotasHome);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
-        // 3. CONFIGURAR EL SPINNER DE FILTRO (Lo que hacía que no se abriera)
+        // 3. Configurar Spinner de Filtro
         spinnerFiltro = findViewById(R.id.spinnerFiltroHome);
         String[] opciones = {"Todos", "Perdido", "Localizado", "En Adopción"};
-
-        ArrayAdapter<String> adapterF = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, opciones);
+        ArrayAdapter<String> adapterF = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, opciones);
         adapterF.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFiltro.setAdapter(adapterF);
 
-        // Evento del Spinner para filtrar la lista
         spinnerFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -55,20 +52,29 @@ public class HomeActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 4. BOTÓN MAPA (Abrir MapsActivity)
-        findViewById(R.id.btnVerMapa).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
+        // 4. CONFIGURAR BOTTOM NAVIGATION (Reemplaza a los botones antiguos)
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+
+        bottomNav.setOnNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_mapa) {
+                startActivity(new Intent(this, MapsActivity.class));
+//            } else if (id == R.id.nav_chat) {
+//                Intent intentChat = new Intent(this, ComunidadActivity.class);
+//                intentChat.putExtra("USER_EMAIL", userEmail);
+//                startActivity(intentChat);
+            } else if (id == R.id.nav_ia) {
+                startActivity(new Intent(this, AsistenteIAActivity.class));
+            } else if (id == R.id.nav_perfil) {
+                Intent intentPerfil = new Intent(this, PerfilActivity.class);
+                intentPerfil.putExtra("USER_EMAIL", userEmail);
+                startActivity(intentPerfil);
+            }
+            return true;
         });
 
-        // 5. BOTÓN PERFIL
-        findViewById(R.id.btnIrPerfil).setOnClickListener(v -> {
-            Intent intent = new Intent(this, PerfilActivity.class);
-            intent.putExtra("USER_EMAIL", userEmail);
-            startActivity(intent);
-        });
-
-        // 6. BOTÓN AGREGAR (FAB)
+        // 5. BOTÓN AGREGAR (Mantenemos el FAB para reportar)
         findViewById(R.id.fabAddPet).setOnClickListener(v -> {
             Intent intent = new Intent(this, ReporteActivity.class);
             intent.putExtra("USER_EMAIL", userEmail);
