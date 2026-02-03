@@ -54,4 +54,12 @@ dependencies {
         // Para manejar corrutinas (hilos)
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.google.guava:guava:31.1-android")
+
+
+        // Asegúrate de usar la 0.9.0 para que reconozca gemini-1.5-flash
+        implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+        implementation("com.google.guava:guava:31.1-android")
+
+    implementation 'com.google.firebase:firebase-database:20.3.0'
+
 }

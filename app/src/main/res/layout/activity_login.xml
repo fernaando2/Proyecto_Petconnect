@@ -44,4 +44,13 @@
         android:text="¿No tienes cuenta? Regístrate"
         android:textColor="#666666"
         android:layout_marginTop="10dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarLogin"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:elevation="10dp" />
 </LinearLayout>

@@ -60,10 +60,10 @@ public class HomeActivity extends AppCompatActivity {
 
             if (id == R.id.nav_mapa) {
                 startActivity(new Intent(this, MapsActivity.class));
-//            } else if (id == R.id.nav_chat) {
-//                Intent intentChat = new Intent(this, ComunidadActivity.class);
-//                intentChat.putExtra("USER_EMAIL", userEmail);
-//                startActivity(intentChat);
+          } else if (id == R.id.nav_chat) {
+                Intent intentChat = new Intent(this, ComunidadActivity.class);
+                intentChat.putExtra("USER_EMAIL", userEmail);
+                startActivity(intentChat);
             } else if (id == R.id.nav_ia) {
                 startActivity(new Intent(this, AsistenteIAActivity.class));
             } else if (id == R.id.nav_perfil) {

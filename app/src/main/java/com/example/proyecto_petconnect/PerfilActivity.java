@@ -1,6 +1,7 @@
 package com.example.proyecto_petconnect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 public class PerfilActivity extends AppCompatActivity {
@@ -16,13 +20,18 @@ public class PerfilActivity extends AppCompatActivity {
     private RecyclerView rv;
     private ArrayList<Mascota> misMascotas;
     private String userEmail;
+    private FirebaseAuth mAuth; // Motor de Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        // Inicializamos Firebase
+        mAuth = FirebaseAuth.getInstance();
         db = new DatabaseHelper(this);
+
+        // Obtenemos el email
         userEmail = getIntent().getStringExtra("USER_EMAIL");
 
         rv = findViewById(R.id.rvMisMascotas);
@@ -31,19 +40,27 @@ public class PerfilActivity extends AppCompatActivity {
         cargarInfoUsuario();
         cargarMisPublicaciones();
 
-        // Dentro del onCreate de PerfilActivity.java
         Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         btnCerrarSesion.setOnClickListener(v -> {
-            // 1. Creamos el Intent hacia el Login
+            // 1. CERRAR SESIÓN EN FIREBASE (Nube)
+            mAuth.signOut();
+
+            // 2. BORRAR PERSISTENCIA LOCAL (Móvil)
+            // Sin esto, el LoginActivity te mandará de vuelta al Home al detectar datos
+            SharedPreferences prefs = getSharedPreferences("PetConnectPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear(); // Borra user_email e isLoggedIn
+            editor.apply();
+
+            // 3. IR AL LOGIN Y LIMPIAR EL HISTORIAL
             Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
 
-            // 2. Limpiamos el historial de pantallas para que no pueda volver atrás
+            // Estas flags borran todas las pantallas abiertas para que no pueda volver atrás
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             startActivity(intent);
-
-            // 3. Cerramos la actividad actual
+            Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
@@ -72,7 +89,6 @@ public class PerfilActivity extends AppCompatActivity {
             }
             c.close();
         }
-        // Pasamos 'this' para que el adapter sepa que estamos en Perfil y deje borrar
         rv.setAdapter(new MascotaAdapter(this, misMascotas));
     }
 

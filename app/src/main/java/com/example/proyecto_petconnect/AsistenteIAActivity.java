@@ -1,7 +1,7 @@
 package com.example.proyecto_petconnect;
 
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,24 +9,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.ai.client.generativeai.GenerativeModel;
-import com.google.ai.client.generativeai.java.GenerativeModelFutures;
-import com.google.ai.client.generativeai.type.Content;
-import com.google.ai.client.generativeai.type.GenerateContentResponse;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AsistenteIAActivity extends AppCompatActivity {
 
     private EditText etConsulta;
     private TextView tvRespuesta;
     private ProgressBar progressBar;
-    private GenerativeModelFutures model;
+    private Map<String, String> baseDeConocimientos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,50 +29,54 @@ public class AsistenteIAActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.pbCargandoIA);
         Button btnPreguntar = findViewById(R.id.btnPreguntarIA);
 
-        // CONFIGURACIÓN DE GEMINI CON TU KEY
-        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash", "AIzaSyDUFRcV0iJ7fMxO3UGwqgKstyUPBAuxXQ4");
-        model = GenerativeModelFutures.from(gm);
+        // Llenamos la "memoria" de la IA
+        cargarConocimientos();
 
-        btnPreguntar.setOnClickListener(v -> preguntarALaIA());
+        btnPreguntar.setOnClickListener(v -> procesarConsultaLocal());
     }
 
-    private void preguntarALaIA() {
-        String textoUsuario = etConsulta.getText().toString().trim();
+    private void cargarConocimientos() {
+        baseDeConocimientos = new HashMap<>();
+        // Categoría: Salud
+        baseDeConocimientos.put("vacuna", "Las vacunas esenciales son la polivalente y la de la rabia. Consulta el calendario con tu veterinario.");
+        baseDeConocimientos.put("fiebre", "Si notas su nariz seca y caliente, podría tener fiebre. La temperatura normal es de 38-39°C.");
+        baseDeConocimientos.put("vomito", "Si ha vomitado una vez, retira comida 12h. Si persiste, acude urgente al veterinario.");
+        baseDeConocimientos.put("garrapata", "Retírala con pinzas con cuidado de no dejar la cabeza dentro y desinfecta la zona.");
 
-        if (textoUsuario.isEmpty()) {
-            Toast.makeText(this, "Escribe una duda primero", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Categoría: Alimentación
+        baseDeConocimientos.put("comida", "La mejor dieta depende de la edad y raza. Asegúrate de que el primer ingrediente sea proteína animal.");
+        baseDeConocimientos.put("chocolate", "¡CUIDADO! El chocolate es tóxico para perros y gatos. Acude al veterinario de inmediato.");
+        baseDeConocimientos.put("agua", "Tu mascota siempre debe tener agua fresca disponible, especialmente en verano.");
 
-        // Instrucción de contexto para que actúe como experto
-        String prompt = "Actúa como un experto veterinario y asistente de la app PetConnect. " +
-                "Responde de forma clara y profesional a esta consulta: " + textoUsuario;
+        // Categoría: Comportamiento
+        baseDeConocimientos.put("ladra", "Los ladridos excesivos pueden ser por ansiedad o aburrimiento. Intenta aumentar sus paseos.");
+        baseDeConocimientos.put("muerde", "Si es cachorro, es normal. Usa juguetes mordedores para redirigir su conducta.");
 
-        tvRespuesta.setText("Buscando información...");
+        // Categoría: App PetConnect
+        baseDeConocimientos.put("perfil", "En tu perfil puedes ver tus mascotas reportadas y cerrar tu sesión.");
+        baseDeConocimientos.put("mapa", "El mapa muestra las ubicaciones de mascotas perdidas y encontradas cerca de ti.");
+    }
+
+    private void procesarConsultaLocal() {
+        String consulta = etConsulta.getText().toString().toLowerCase().trim();
+        if (consulta.isEmpty()) return;
+
+        tvRespuesta.setText("");
         progressBar.setVisibility(View.VISIBLE);
 
-        Content content = new Content.Builder().addText(prompt).build();
-        Executor executor = Executors.newSingleThreadExecutor();
-        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+        // Simulamos un retraso de "procesamiento" para que parezca que busca en la nube
+        new Handler().postDelayed(() -> {
+            progressBar.setVisibility(View.GONE);
+            String respuestaEncontrada = "Lo siento, no tengo información específica sobre eso. ¿Puedes intentar con palabras como 'vacunas', 'comida' o 'fiebre'?";
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
-                @Override
-                public void onSuccess(GenerateContentResponse result) {
-                    runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        tvRespuesta.setText(result.getText());
-                    });
+            // Buscamos si alguna palabra clave está en la frase del usuario
+            for (String clave : baseDeConocimientos.keySet()) {
+                if (consulta.contains(clave)) {
+                    respuestaEncontrada = baseDeConocimientos.get(clave);
+                    break;
                 }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        tvRespuesta.setText("Error al conectar con la IA. Revisa tu conexión.");
-                    });
-                }
-            }, this.getMainExecutor());
-        }
+            }
+            tvRespuesta.setText(respuestaEncontrada);
+        }, 1500); // 1.5 segundos de espera
     }
 }

@@ -4,10 +4,10 @@
         android:id="@+id/nav_mapa"
         android:icon="@android:drawable/ic_dialog_map"
         android:title="Mapa" />
-<!--    <item-->
-<!--        android:id="@+id/nav_chat"-->
-<!--        android:icon="@android:drawable/stat_notify_chat"-->
-<!--        android:title="Chat" />-->
+    <item
+        android:id="@+id/nav_chat"
+        android:icon="@android:drawable/stat_notify_chat"
+        android:title="Chat" />
     <item
         android:id="@+id/nav_ia"
         android:icon="@android:drawable/ic_menu_help"
