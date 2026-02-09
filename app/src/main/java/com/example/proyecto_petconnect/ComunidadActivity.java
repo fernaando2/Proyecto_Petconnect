@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+// Ya no hace falta importar AppCompatActivity explícitamente porque BaseActivity lo hace
+// import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -18,7 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class ComunidadActivity extends AppCompatActivity {
+// CAMBIO 1: Heredar de BaseActivity
+public class ComunidadActivity extends BaseActivity {
 
     private EditText etMensaje;
     private ListView lvChat;
@@ -26,13 +27,17 @@ public class ComunidadActivity extends AppCompatActivity {
     private ArrayList<Mensaje> listaMensajes;
     private DatabaseReference dbRef;
 
-    // AQUÍ DEFINIMOS LA VARIABLE QUE TE FALTABA
     private String emailUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comunidad);
+
+        // CAMBIO 2: Activar la barra de navegación marcando "Chat"
+        configurarNavegacion(R.id.nav_chat);
+
+        // --- El resto de tu lógica sigue igual ---
 
         // 1. Inicializar Firebase y obtener el email del usuario logueado
         dbRef = FirebaseDatabase.getInstance().getReference("chat_comunitario");

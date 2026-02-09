@@ -1,33 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvTituloChat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chat Comunitario"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
-
-    <ListView
-        android:id="@+id/lvChatComunidad"
+    <include
+        android:id="@+id/bottom_navigation"
+        layout="@layout/layout_barra_navegacion"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tvTituloChat"
-        android:layout_above="@+id/layoutEnvio"
-        android:divider="@null" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 
     <LinearLayout
         android:id="@+id/layoutEnvio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_above="@id/bottom_navigation"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="#FFFFFF">
 
         <EditText
             android:id="@+id/etMensajeChat"
@@ -42,4 +32,26 @@
             android:layout_height="wrap_content"
             android:text="Enviar" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTituloChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat Comunitario"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ListView
+        android:id="@+id/lvChatComunidad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvTituloChat"
+        android:layout_above="@id/layoutEnvio"
+        android:paddingHorizontal="10dp"
+        android:divider="@null" />
+
 </RelativeLayout>

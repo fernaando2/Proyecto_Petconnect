@@ -7,12 +7,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+// Ya no necesitamos importar AppCompatActivity explícitamente
+// import androidx.appcompat.app.AppCompatActivity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AsistenteIAActivity extends AppCompatActivity {
+// CAMBIO 1: Heredar de BaseActivity
+public class AsistenteIAActivity extends BaseActivity {
 
     private EditText etConsulta;
     private TextView tvRespuesta;
@@ -24,6 +25,9 @@ public class AsistenteIAActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asistente_ia);
 
+        // CAMBIO 2: Activar la barra de navegación marcando "IA"
+        configurarNavegacion(R.id.nav_ia);
+
         etConsulta = findViewById(R.id.etConsultaIA);
         tvRespuesta = findViewById(R.id.tvRespuestaIA);
         progressBar = findViewById(R.id.pbCargandoIA);
@@ -32,6 +36,7 @@ public class AsistenteIAActivity extends AppCompatActivity {
         // Llenamos la "memoria" de la IA
         cargarConocimientos();
 
+        // Usamos una expresión lambda para procesar la consulta
         btnPreguntar.setOnClickListener(v -> procesarConsultaLocal());
     }
 
@@ -59,6 +64,7 @@ public class AsistenteIAActivity extends AppCompatActivity {
 
     private void procesarConsultaLocal() {
         String consulta = etConsulta.getText().toString().toLowerCase().trim();
+
         if (consulta.isEmpty()) return;
 
         tvRespuesta.setText("");
@@ -77,6 +83,6 @@ public class AsistenteIAActivity extends AppCompatActivity {
                 }
             }
             tvRespuesta.setText(respuestaEncontrada);
-        }, 1500); // 1.5 segundos de espera
+        }, 1500); // 1.5 segundos de espera para simular "pensamiento"
     }
 }
