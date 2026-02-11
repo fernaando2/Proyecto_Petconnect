@@ -2,30 +2,33 @@ package com.example.proyecto_petconnect;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-// Ya no necesitamos importar AppCompatActivity explícitamente
-// import androidx.appcompat.app.AppCompatActivity;
-import java.util.HashMap;
-import java.util.Map;
 
-// CAMBIO 1: Heredar de BaseActivity
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class AsistenteIAActivity extends BaseActivity {
 
     private EditText etConsulta;
     private TextView tvRespuesta;
     private ProgressBar progressBar;
-    private Map<String, String> baseDeConocimientos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asistente_ia);
 
-        // CAMBIO 2: Activar la barra de navegación marcando "IA"
+        // Activar la barra de navegación (tu código original)
         configurarNavegacion(R.id.nav_ia);
 
         etConsulta = findViewById(R.id.etConsultaIA);
@@ -33,56 +36,87 @@ public class AsistenteIAActivity extends BaseActivity {
         progressBar = findViewById(R.id.pbCargandoIA);
         Button btnPreguntar = findViewById(R.id.btnPreguntarIA);
 
-        // Llenamos la "memoria" de la IA
-        cargarConocimientos();
-
-        // Usamos una expresión lambda para procesar la consulta
-        btnPreguntar.setOnClickListener(v -> procesarConsultaLocal());
+        btnPreguntar.setOnClickListener(v -> consultarWikipedia());
     }
 
-    private void cargarConocimientos() {
-        baseDeConocimientos = new HashMap<>();
-        // Categoría: Salud
-        baseDeConocimientos.put("vacuna", "Las vacunas esenciales son la polivalente y la de la rabia. Consulta el calendario con tu veterinario.");
-        baseDeConocimientos.put("fiebre", "Si notas su nariz seca y caliente, podría tener fiebre. La temperatura normal es de 38-39°C.");
-        baseDeConocimientos.put("vomito", "Si ha vomitado una vez, retira comida 12h. Si persiste, acude urgente al veterinario.");
-        baseDeConocimientos.put("garrapata", "Retírala con pinzas con cuidado de no dejar la cabeza dentro y desinfecta la zona.");
-
-        // Categoría: Alimentación
-        baseDeConocimientos.put("comida", "La mejor dieta depende de la edad y raza. Asegúrate de que el primer ingrediente sea proteína animal.");
-        baseDeConocimientos.put("chocolate", "¡CUIDADO! El chocolate es tóxico para perros y gatos. Acude al veterinario de inmediato.");
-        baseDeConocimientos.put("agua", "Tu mascota siempre debe tener agua fresca disponible, especialmente en verano.");
-
-        // Categoría: Comportamiento
-        baseDeConocimientos.put("ladra", "Los ladridos excesivos pueden ser por ansiedad o aburrimiento. Intenta aumentar sus paseos.");
-        baseDeConocimientos.put("muerde", "Si es cachorro, es normal. Usa juguetes mordedores para redirigir su conducta.");
-
-        // Categoría: App PetConnect
-        baseDeConocimientos.put("perfil", "En tu perfil puedes ver tus mascotas reportadas y cerrar tu sesión.");
-        baseDeConocimientos.put("mapa", "El mapa muestra las ubicaciones de mascotas perdidas y encontradas cerca de ti.");
-    }
-
-    private void procesarConsultaLocal() {
-        String consulta = etConsulta.getText().toString().toLowerCase().trim();
+    private void consultarWikipedia() {
+        String consulta = etConsulta.getText().toString().trim();
 
         if (consulta.isEmpty()) return;
 
         tvRespuesta.setText("");
         progressBar.setVisibility(View.VISIBLE);
 
-        // Simulamos un retraso de "procesamiento" para que parezca que busca en la nube
-        new Handler().postDelayed(() -> {
-            progressBar.setVisibility(View.GONE);
-            String respuestaEncontrada = "Lo siento, no tengo información específica sobre eso. ¿Puedes intentar con palabras como 'vacunas', 'comida' o 'fiebre'?";
+        // Hilo en Segundo Plano para no bloquear la interfaz (Concurrencia - Matrícula de Honor)
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
 
-            // Buscamos si alguna palabra clave está en la frase del usuario
-            for (String clave : baseDeConocimientos.keySet()) {
-                if (consulta.contains(clave)) {
-                    respuestaEncontrada = baseDeConocimientos.get(clave);
-                    break;
-                }
+            // Hacemos la llamada a Wikipedia
+            String respuesta = hacerPeticionWikipedia(consulta);
+
+            // Volvemos al hilo principal para actualizar la pantalla
+            new Handler(Looper.getMainLooper()).post(() -> {
+                progressBar.setVisibility(View.GONE);
+                tvRespuesta.setText(respuesta);
+            });
+        });
+    }
+
+    private String hacerPeticionWikipedia(String termino) {
+        try {
+            // 1. Preparamos la palabra para la URL (cambia espacios por %20)
+            String terminoCodificado = URLEncoder.encode(termino, "UTF-8");
+
+            // 2. URL oficial de la API de Wikipedia en español (resumen de la página)
+            String urlString = "https://es.wikipedia.org/api/rest_v1/page/summary/" + terminoCodificado;
+            URL url = new URL(urlString);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET"); // Es GET, mucho más fácil que POST
+            conn.setConnectTimeout(5000); // 5 segundos de tiempo de espera máximo
+
+            int responseCode = conn.getResponseCode();
+
+            // Si Wikipedia nos devuelve 404, es que no existe ese artículo
+            if (responseCode == 404) {
+                return "No he encontrado información exacta sobre '" + termino + "' en nuestra base de datos urbana (Wikipedia). Intenta buscar otra palabra (ej: Perro, Gato, Rabia).";
             }
-            tvRespuesta.setText(respuestaEncontrada);
-        }, 1500); // 1.5 segundos de espera para simular "pensamiento"
+
+            // Si ha ido bien (200 OK), leemos la respuesta
+            if (responseCode >= 200 && responseCode <= 299) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                String jsonCompleto = response.toString();
+
+                // Buscamos a mano el campo "extract", que es el resumen en texto plano
+                String clave = "\"extract\":\"";
+                int startIndex = jsonCompleto.indexOf(clave);
+
+                if (startIndex != -1) {
+                    startIndex += clave.length();
+                    // Buscamos dónde termina el resumen
+                    int endIndex = jsonCompleto.indexOf("\",\"", startIndex);
+                    if (endIndex == -1) endIndex = jsonCompleto.indexOf("\"}", startIndex);
+
+                    if (endIndex > startIndex) {
+                        return jsonCompleto.substring(startIndex, endIndex)
+                                .replace("\\n", "\n")
+                                .replace("\\\"", "\"");
+                    }
+                }
+                return "He encontrado el artículo, pero no he podido leer el resumen.";
+            } else {
+                return "Error al conectar con la base de datos central (" + responseCode + ").";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Parece que no tienes conexión a internet ahora mismo. Inténtalo de nuevo más tarde.";
+        }
     }
 }
