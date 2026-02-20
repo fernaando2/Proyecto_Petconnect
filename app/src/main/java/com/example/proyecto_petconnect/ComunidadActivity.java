@@ -6,8 +6,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-// Ya no hace falta importar AppCompatActivity explícitamente porque BaseActivity lo hace
-// import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -37,7 +36,6 @@ public class ComunidadActivity extends BaseActivity {
         // CAMBIO 2: Activar la barra de navegación marcando "Chat"
         configurarNavegacion(R.id.nav_chat);
 
-        // --- El resto de tu lógica sigue igual ---
 
         // 1. Inicializar Firebase y obtener el email del usuario logueado
         dbRef = FirebaseDatabase.getInstance().getReference("chat_comunitario");

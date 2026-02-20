@@ -28,7 +28,7 @@ public class AsistenteIAActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asistente_ia);
 
-        // Activar la barra de navegación (tu código original)
+        // Activar la barra de navegación
         configurarNavegacion(R.id.nav_ia);
 
         etConsulta = findViewById(R.id.etConsultaIA);
@@ -47,7 +47,7 @@ public class AsistenteIAActivity extends BaseActivity {
         tvRespuesta.setText("");
         progressBar.setVisibility(View.VISIBLE);
 
-        // Hilo en Segundo Plano para no bloquear la interfaz (Concurrencia - Matrícula de Honor)
+        // Hilo en Segundo Plano para no bloquear la interfaz (Concurrencia)
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
 
@@ -64,10 +64,10 @@ public class AsistenteIAActivity extends BaseActivity {
 
     private String hacerPeticionWikipedia(String termino) {
         try {
-            // 1. Preparamos la palabra para la URL (cambia espacios por %20)
+            // 1. Preparamos la palabra para la URL
             String terminoCodificado = URLEncoder.encode(termino, "UTF-8");
 
-            // 2. URL oficial de la API de Wikipedia en español (resumen de la página)
+            // 2. URL oficial de la API de Wikipedia en español
             String urlString = "https://es.wikipedia.org/api/rest_v1/page/summary/" + terminoCodificado;
             URL url = new URL(urlString);
 

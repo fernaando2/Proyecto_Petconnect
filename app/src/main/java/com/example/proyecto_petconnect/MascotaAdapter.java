@@ -93,12 +93,12 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Estos IDs deben coincidir con el XML "fila_mascota.xml" que te pasé
+            // Estos IDs deben coincidir con el XML "fila_mascota.xml"
             imgMascota = itemView.findViewById(R.id.imgMascotaFila);
             tvNombre = itemView.findViewById(R.id.tvNombreFila);
             tvEstado = itemView.findViewById(R.id.tvEstadoFila);
-            btnBorrar = itemView.findViewById(R.id.btnBorrar); // ID corregido según el XML
-            btnEditar = itemView.findViewById(R.id.btnEditar); // ID corregido según el XML
+            btnBorrar = itemView.findViewById(R.id.btnBorrar);
+            btnEditar = itemView.findViewById(R.id.btnEditar);
         }
     }
 }

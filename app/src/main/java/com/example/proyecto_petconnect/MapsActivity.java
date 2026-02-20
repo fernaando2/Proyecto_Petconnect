@@ -8,9 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
-
-// CAMBIO 1: Ya no heredamos de FragmentActivity directamente, sino de BaseActivity
-// BaseActivity extiende de AppCompatActivity, que a su vez soporta Fragmentos.
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -113,7 +110,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback {
         p.setColor(col);
         canvas.drawCircle(s/2f, s/2f, s/2f, p);
 
-        // 2. Crear recorte circular para la foto (un poco más pequeño que el borde)
+        // 2. Crear recorte circular para la foto
         Path path = new Path();
         float radioFoto = s/2f - 10;
         path.addCircle(s/2f, s/2f, radioFoto, Path.Direction.CCW);

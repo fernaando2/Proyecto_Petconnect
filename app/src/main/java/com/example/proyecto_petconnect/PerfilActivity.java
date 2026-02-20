@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-// IMPORTANTE: Ya no necesitamos importar AppCompatActivity porque lo tiene BaseActivity
 // import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +32,6 @@ public class PerfilActivity extends BaseActivity {
         // CAMBIO 2: Activamos el menú y marcamos el icono de "Perfil"
         configurarNavegacion(R.id.nav_perfil);
 
-        // --- El resto de tu código sigue igual ---
 
         // Inicializamos Firebase
         mAuth = FirebaseAuth.getInstance();

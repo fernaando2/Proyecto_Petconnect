@@ -12,7 +12,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    // Este método lo llamarás desde todas tus pantallas
+    // Este método lo llamaremos desde todas tus pantallas
     protected void configurarNavegacion(int idItemActual) {
         BottomNavigationView nav = findViewById(R.id.bottom_navigation);
 
