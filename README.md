@@ -26,14 +26,12 @@
 
 Basándonos en el **Diseño Centrado en el Usuario (DCU)**, hemos creado una interfaz que no requiere curva de aprendizaje. Entendemos que el usuario puede estar bajo estrés o en la calle (luz solar directa, usando una sola mano). Por ello, el sistema está diseñado para que el ciudadano entienda su contexto en los **primeros 7 segundos** y reciba recompensas psicológicas mediante gamificación (Ej: Rango "Rescatador" y acumulación de puntos por ayudar).
 
-![Portada PetConnect](./imagenes/portada_canva.png) *(Nota: Sube una captura general de tu app a la carpeta imágenes con este nombre)*
-
 ---
 
 ## 2. Enlaces de Entrega (Figma y Canva)
 
-* 🎨 **[Prototipo Interactivo en Figma (Incluye V1 y V2)]**(PON_AQUÍ_EL_ENLACE_A_FIGMA)
-* 📊 **[Presentación del Proyecto en Canva]**(PON_AQUÍ_EL_ENLACE_A_CANVA)
+* 🎨 **[Prototipo Interactivo en Figma (Incluye V1 y V2)]**(https://finish-finch-59171435.figma.site)
+* 📊 **[Presentación del Proyecto en Canva]**(https://www.canva.com/design/DAHA1CvyiTo/BBALAyB3VndBPmA8-uKiiA/edit?utm_content=DAHA1CvyiTo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
 
@@ -86,8 +84,6 @@ Tras analizar métricas como el tiempo por tarea, la tasa de éxito y el nivel d
 5. 🔄 **Navegación Circular y Salida (Caso Agustín):** Inclusión de botones superiores de "Atrás" y "Finalizar" tras un reporte para evitar la sensación de "callejón sin salida".
 6. ⏳ **Estados de Carga Visuales:** Integración de *Skeletons* y barras de progreso para ofrecer feedback constante sobre el estado del sistema.
 
-![Resultados de las pruebas](./imagenes/infografia_pruebas.png) *(Nota: Asegúrate de guardar la imagen que generamos antes en la carpeta imagenes con este nombre)*
-
 ---
 
 ## 7. Futuras Implementaciones
@@ -97,5 +93,3 @@ Como recomendaciones de escalabilidad técnica para futuras versiones (V3), se p
 * **Soporte Offline:** Caché local para reportar incidencias en zonas sin cobertura, sincronizándose al recuperar conexión.
 * **Dark Mode (Modo Oscuro):** Mejora de accesibilidad en entornos nocturnos y ahorro de batería en pantallas OLED.
 
----
-*Documentación técnica elaborada para la superación de los criterios de evaluación del módulo de Desarrollo de Interfaces.*
