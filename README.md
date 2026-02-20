@@ -58,10 +58,10 @@ El diseño cubre el flujo completo de la aplicación, destacando las 5 pantallas
 
 3. **Pantalla de Creación de Incidencia (Reporte):** Formulario estructurado sin desplegables pesados. Usa selectores visuales rápidos (chips) y un área de captura multimedia (foto) de gran tamaño.
    <img width="512" height="904" alt="image" src="https://github.com/user-attachments/assets/4ab584e1-5a38-4292-bfca-bac7f97a72e9" />
-
-4. **Pantalla de Detalle y Mapa:** Representación de ubicación exacta. Utiliza un mapa interactivo con pines semánticos muy visuales y legibles.
+    
+5. **Pantalla de Detalle y Mapa:** Representación de ubicación exacta. Utiliza un mapa interactivo con pines semánticos muy visuales y legibles.
    <img width="363" height="802" alt="4" src="https://github.com/user-attachments/assets/8724f2f2-5d1f-4e96-9d13-483394bdc8c9" />
-5. **Pantalla de Chat SOS (Soporte):** Conversación estructurada en burbujas para diferenciar claramente al usuario del operador, con botones de acceso rápido para emergencias ("Enviar ubicación").
+6. **Pantalla de Chat SOS (Soporte):** Conversación estructurada en burbujas para diferenciar claramente al usuario del operador, con botones de acceso rápido para emergencias ("Enviar ubicación").
   <img width="507" height="912" alt="image" src="https://github.com/user-attachments/assets/4bf530df-11ea-49fa-a641-502413a3f1da" />
 
 ---
