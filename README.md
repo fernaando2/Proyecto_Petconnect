@@ -51,10 +51,18 @@ Cumpliendo estricta y rigurosamente con los requisitos de la entrega, los archiv
 El diseño cubre el flujo completo de la aplicación, destacando las 5 pantallas principales exigidas:
 
 1. **Pantalla de Login:** Acceso rápido con validaciones visuales en tiempo real y mensajes de error humanizados (proactivos, no técnicos).
+   <img width="559" height="778" alt="image" src="https://github.com/user-attachments/assets/252614b7-3acd-4864-9884-8315f00f99b3" />
+
 2. **Pantalla Principal (Home):** Listado de incidencias mediante tarjetas (*Material Cards*). Diferencia rápidamente el estado de las mascotas (Perdidos vs Encontrados) e incluye el resumen de gamificación del usuario.
+   <img width="493" height="909" alt="image" src="https://github.com/user-attachments/assets/58ffdaa8-dff9-4eff-8869-b9707058c2a7" />
+
 3. **Pantalla de Creación de Incidencia (Reporte):** Formulario estructurado sin desplegables pesados. Usa selectores visuales rápidos (chips) y un área de captura multimedia (foto) de gran tamaño.
+   <img width="512" height="904" alt="image" src="https://github.com/user-attachments/assets/4ab584e1-5a38-4292-bfca-bac7f97a72e9" />
+
 4. **Pantalla de Detalle y Mapa:** Representación de ubicación exacta. Utiliza un mapa interactivo con pines semánticos muy visuales y legibles.
+   <img width="363" height="802" alt="4" src="https://github.com/user-attachments/assets/8724f2f2-5d1f-4e96-9d13-483394bdc8c9" />
 5. **Pantalla de Chat SOS (Soporte):** Conversación estructurada en burbujas para diferenciar claramente al usuario del operador, con botones de acceso rápido para emergencias ("Enviar ubicación").
+  <img width="507" height="912" alt="image" src="https://github.com/user-attachments/assets/4bf530df-11ea-49fa-a641-502413a3f1da" />
 
 ---
 
