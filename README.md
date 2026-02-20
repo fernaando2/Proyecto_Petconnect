@@ -30,9 +30,11 @@ Basándonos en el **Diseño Centrado en el Usuario (DCU)**, hemos creado una int
 
 ## 2. Enlaces de Entrega (Figma y Canva)
 
-* 🎨 **[Prototipo Interactivo en Figma (Incluye V1 y V2)]**V1:(https://land-food-01024763.figma.site/)
+* 🎨 [Prototipo Interactivo en Figma (Incluye V1 y V2)]
+* V1:(https://land-food-01024763.figma.site/)
 * V2:(https://finish-finch-59171435.figma.site)
-* 📊 **[Presentación del Proyecto en Canva]**(https://www.canva.com/design/DAHA1CvyiTo/BBALAyB3VndBPmA8-uKiiA/edit?utm_content=DAHA1CvyiTo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+* 📊 **[Presentación del Proyecto en Canva]**
+* (https://www.canva.com/design/DAHA1CvyiTo/BBALAyB3VndBPmA8-uKiiA/edit?utm_content=DAHA1CvyiTo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
 
