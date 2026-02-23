@@ -3,7 +3,10 @@ plugins {
     // 1. AÑADE ESTA LÍNEA (Asegúrate de añadirla también en libs.versions.toml)
     id 'com.google.gms.google-services'
 }
-
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').exists()) {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+}
 android {
     namespace 'com.example.proyecto_petconnect'
     compileSdk 36
@@ -14,7 +17,7 @@ android {
         targetSdk 36
         versionCode 1
         versionName "1.0"
-
+        manifestPlaceholders = [ MAPS_API_KEY: properties.getProperty("MAPS_API_KEY", "") ]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
